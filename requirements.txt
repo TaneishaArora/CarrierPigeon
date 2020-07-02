@@ -1,3 +1,2 @@
 twilio
 praw
-beautifulsoup4

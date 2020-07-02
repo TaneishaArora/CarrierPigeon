@@ -1,11 +1,8 @@
 import os  # for API Token and Security Key stored in Environment Variables
-from bs4 import \
-    BeautifulSoup  # for parsing and modifying twiml response - need lxml
-
 from praw import Reddit # python wrapper for Reddit API
 
-from twilio.rest import Client
-from twilio.twiml.voice_response import VoiceResponse
+from twilio.rest import Client # to make request to TWILIO API
+from twilio.twiml.voice_response import VoiceResponse, Say # to construct response
 
 
 def get_joke():
@@ -25,14 +22,12 @@ def get_joke():
     return joke
 
 def create_message(messages):
-    with open("outline.xml", 'r') as outline:
-        outline_xml = BeautifulSoup(outline.read(), features="xml")
-        for message in messages:
-            say_tag = outline_xml.new_tag('Say')
-            say_tag.string = message
-            outline_xml.Response.append(say_tag)
-        # print(outline_xml.prettify())
-    return outline_xml.prettify()
+    response = VoiceResponse()
+    for message in messages:
+        response.append(Say(message, level='strong', language="en-GB"))
+
+    return response
+
 
 def place_call(caller, reciever, message):
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
